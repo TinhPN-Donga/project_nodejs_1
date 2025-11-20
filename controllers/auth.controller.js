@@ -71,11 +71,11 @@ const login = async (req, res, next) => {
         const body = req.body;
 
         if (!body.email || !validate.isEmail(body.email)) {
-            throw new Error("Email is wrong");
+            throw new Error("Email or Password is wrong");
         }
 
         if (!body.password || body.password.length < 6) {
-            throw new Error("Password is wrong");
+            throw new Error("Email or Password  is wrong");
         }
 
         const user = await UserService.findByEmail(body.email);
@@ -85,7 +85,7 @@ const login = async (req, res, next) => {
 
         let checkPass = await bcrypt.compare(body.password, user.password);
         if (!checkPass) {
-            throw new Error("Password is wrong");
+            throw new Error("Email or Password  is wrong");
         }
 
         // Generate JWT

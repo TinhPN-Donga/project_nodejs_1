@@ -1,14 +1,14 @@
 var express = require('express');
 var router = express.Router();
 const {AuthController} = require('../controllers/index');
-
+const redirectIfLoggedIn = require('../middlewares/redirectIfLoggedIn');
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource Auth');
 });
 
 /* GET login page. */
-router.get('/login', AuthController.getLoginPage);
+router.get('/login',redirectIfLoggedIn, AuthController.getLoginPage);
 
 /* GET register page. */
 router.get('/register', AuthController.getRegistePage);

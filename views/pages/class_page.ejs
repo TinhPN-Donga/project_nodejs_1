@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Chi tiết điểm danh hôm nay</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        :root {
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --primary: #2563eb;
+            --primary-soft: #dbeafe;
+            --text-main: #111827;
+            --text-sub: #6b7280;
+            --border: #e5e7eb;
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.08);
+            --present: #16a34a;
+            --absent: #ef4444;
+            --late: #f97316;
+            --excused: #0ea5e9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                sans-serif;
+            background: radial-gradient(circle at top, #e0f2fe 0, #f3f4f6 60%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 18px 18px 26px;
+            box-shadow: var(--shadow-soft);
+            backdrop-filter: blur(12px);
+        }
+
+        @media (min-width: 768px) {
+            .page {
+                padding: 22px 24px 30px;
+            }
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .back-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: #f9fafb;
+            font-size: 18px;
+        }
+
+        .back-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .header-text h1 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .header-text p {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+        }
+
+        /* Top info: overview + image */
+        .top-row {
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+            gap: 14px;
+        }
+
+        @media (max-width: 640px) {
+            .top-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .overview-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.04);
+        }
+
+        .overview-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .overview-body {
+            font-size: 0.92rem;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+
+        .overview-body span.highlight {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .overview-time {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+
+        .class-photo {
+            background: #111827;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            position: relative;
+            min-height: 160px;
+        }
+
+        .class-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .class-photo-label {
+            position: absolute;
+            bottom: 8px;
+            left: 10px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.7);
+            color: #f9fafb;
+            font-size: 0.8rem;
+        }
+
+        /* Filter tabs */
+        .filter-row {
+            margin-top: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: #f9fafb;
+            color: var(--text-sub);
+            cursor: pointer;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
+        }
+
+        .filter-btn:hover:not(.active) {
+            background: #e5e7eb;
+        }
+
+        /* Student list */
+        .student-list {
+            margin-top: 14px;
+            border-radius: var(--radius-lg);
+            background: #f9fafb;
+            border: 1px solid var(--border);
+            max-height: 460px;
+            overflow-y: auto;
+        }
+
+        .student-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            gap: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .student-item:last-child {
+            border-bottom: none;
+        }
+
+        .avatar-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #ffffff;
+            flex-shrink: 0;
+            font-size: 0.94rem;
+        }
+
+        .avatar-present {
+            background: var(--present);
+        }
+
+        .avatar-absent {
+            background: var(--absent);
+        }
+
+        .avatar-late {
+            background: var(--late);
+        }
+
+        .avatar-excused {
+            background: var(--excused);
+        }
+
+        .student-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .student-name {
+            font-size: 0.98rem;
+            font-weight: 500;
+        }
+
+        .student-status-text {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+        }
+
+        .student-status-text.present {
+            color: var(--present);
+        }
+
+        .student-status-text.absent {
+            color: var(--absent);
+        }
+
+        .student-status-text.late {
+            color: var(--late);
+        }
+
+        .student-status-text.excused {
+            color: var(--excused);
+        }
+
+        .status-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .status-icon.present {
+            background: #dcfce7;
+            color: var(--present);
+        }
+
+        .status-icon.absent {
+            background: #fee2e2;
+            color: var(--absent);
+        }
+
+        .status-icon.late {
+            background: #ffedd5;
+            color: var(--late);
+        }
+
+        .status-icon.excused {
+            background: #e0f2fe;
+            color: var(--excused);
+        }
+
+        .refresh-btn {
+            position: absolute;
+            bottom: 8px;
+            right: 10px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: var(--primary);
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .refresh-btn:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+
+<body>
+  <div class="page">
+    <!-- Header -->
+    <div class="header">
+      <button class="back-btn" onclick="window.history.back()">
+        ←
+      </button>
+      <div class="header-text">
+        <h1>Chi tiết điểm danh hôm nay</h1>
+        <p>Lớp 5A1 • Tiết 1 • Môn Toán</p>
+      </div>
+    </div>
+
+    <!-- Top row -->
+    <div class="top-row">
+      <!-- Overview card -->
+      <div class="overview-card">
+        <div class="overview-title">Tổng quan</div>
+        <div class="overview-body">
+          <% if (attendance) { %>
+            Tổng sĩ số:
+            <span class="highlight"><%= attendance.total %> học sinh</span><br />
+            Có mặt:
+            <span class="highlight"><%= attendance.present %></span><br />
+            Vắng:
+            <span class="highlight"><%= attendance.absent ? attendance.absent.length : 0 %></span><br />
+            Đi muộn:
+            <span class="highlight">0</span><br />
+            Nghỉ có phép:
+            <span class="highlight">0</span>
+          <% } else { %>
+            Chưa có dữ liệu điểm danh gần đây.
+          <% } %>
+        </div>
+        <div class="overview-time">
+          <% if (attendance && attendance.createdAt) { %>
+            Cập nhật lúc
+            <%= attendance.createdAt.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) %>
+            ngày
+            <%= attendance.createdAt.toLocaleDateString('vi-VN') %>
+          <% } else { %>
+            Chưa có thời gian cập nhật
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Class photo -->
+      <div class="class-photo">
+        <img
+          src="<%= attendance && attendance.image ? attendance.image : 'https://images.pexels.com/photos/8617964/pexels-photo-8617964.jpeg?auto=compress&cs=tinysrgb&w=1200' %>"
+          alt="Ảnh lớp học"
+        />
+
+        <div class="class-photo-label">Ảnh lớp học</div>
+
+        <!-- ⭐ Nút cập nhật ngay -->
+        <button class="refresh-btn" onclick="refreshAttendance()">
+          ⟳ Cập nhật ngay
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="filter-row">
+      <button class="filter-btn active">Tất cả</button>
+      <button class="filter-btn">Có mặt</button>
+      <button class="filter-btn">Vắng</button>
+      <button class="filter-btn">Đi muộn</button>
+      <button class="filter-btn">Nghỉ có phép</button>
+    </div>
+
+    <!-- Student list -->
+    <div class="student-list">
+      <% if (attendance && attendance.absent && attendance.absent.length > 0) { %>
+        <% attendance.absent.forEach(function(name) { %>
+          <div class="student-item">
+            <div class="avatar-circle avatar-absent">
+              <%= name && name.length > 0 ? name[0].toUpperCase() : '?' %>
+            </div>
+            <div class="student-info">
+              <div class="student-name"><%= name %></div>
+              <div class="student-status-text absent">Vắng</div>
+            </div>
+            <div class="status-icon absent">✖</div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="student-item">
+          <div class="student-info">
+            <div class="student-name">Không có học sinh vắng.</div>
+            <div class="student-status-text present">
+              Tất cả học sinh đều có mặt hoặc chưa có dữ liệu chi tiết.
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <script>
+    function refreshAttendance() {
+      // Cách đơn giản: reload lại trang để lấy bản ghi mới nhất
+      location.reload();
+
+      // Hoặc sau này bạn có thể:
+      // fetch('/api/attendance/refresh', { method: 'POST' })
+      //   .then(res => res.json())
+      //   .then(data => console.log(data));
+    }
+  </script>
+</body>
+
+
+</html>

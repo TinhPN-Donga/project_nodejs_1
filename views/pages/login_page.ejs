@@ -1,41 +1,303 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <title>HTML5 Login Form with validation Example</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-    <link rel="stylesheet" href="/stylesheets/login_style.css">
+  <meta charset="UTF-8">
+  <title>Login • Attendance System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at top, #1d4ed8 0, #020617 52%, #020617 100%);
+      --card-bg: rgba(15, 23, 42, 0.9);
+      --accent: #3b82f6;
+      --accent-soft: rgba(59, 130, 246, 0.15);
+      --accent-hover: #2563eb;
+      --text-main: #e5e7eb;
+      --text-sub: #9ca3af;
+      --error: #f97373;
+      --border: rgba(148, 163, 184, 0.28);
+      --radius-lg: 18px;
+      --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.65);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      padding: 16px;
+    }
+
+    #login-form-wrap {
+      width: 100%;
+      max-width: 380px;
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 26px 26px 24px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      backdrop-filter: blur(18px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Light glow accent */
+    #login-form-wrap::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.18), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    h2 {
+      position: relative;
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      margin: 0 0 4px;
+    }
+
+    .subtitle {
+      position: relative;
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      margin-bottom: 18px;
+    }
+
+    form {
+      position: relative;
+      margin-top: 4px;
+    }
+
+    form p {
+      margin: 0 0 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      margin-bottom: 4px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 11px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--text-main);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, transform 0.08s ease;
+    }
+
+    input[type="email"]::placeholder,
+    input[type="password"]::placeholder {
+      color: #6b7280;
+      font-size: 0.86rem;
+    }
+
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.4);
+      background: rgba(15, 23, 42, 0.95);
+      transform: translateY(-1px);
+    }
+
+    input[type="submit"] {
+      width: 100%;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      margin-top: 6px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, var(--accent), #60a5fa);
+      color: #f9fafb;
+      cursor: pointer;
+      box-shadow: 0 18px 35px rgba(37, 99, 235, 0.5);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+    }
+
+    input[type="submit"]:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+      box-shadow: 0 22px 40px rgba(37, 99, 235, 0.6);
+    }
+
+    input[type="submit"]:active {
+      transform: translateY(1px);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.9);
+    }
+
+    #create-account-wrap {
+      position: relative;
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      text-align: center;
+    }
+
+    #create-account-wrap a {
+      color: #93c5fd;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    #create-account-wrap a:hover {
+      color: #bfdbfe;
+      text-decoration: underline;
+    }
+
+    .error-banner {
+      position: relative;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(248, 113, 113, 0.7);
+      color: #fecaca;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      margin-bottom: 10px;
+      display: none;
+    }
+
+    .error-banner.visible {
+      display: block;
+    }
+
+    .error-banner strong {
+      margin-right: 4px;
+    }
+
+    .remember-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .remember-row label.remember-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: none;
+      font-size: 0.8rem;
+      color: var(--text-sub);
+    }
+
+    .remember-row input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--accent);
+    }
+
+    .forgot-link {
+      font-size: 0.8rem;
+    }
+
+    .forgot-link a {
+      color: #93c5fd;
+      text-decoration: none;
+    }
+
+    .forgot-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      #login-form-wrap {
+        padding: 22px 18px 20px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <!-- partial:index.partial.html -->
-    <div id="login-form-wrap">
-        <h2>Login</h2>
-        <form id="login-form" method="POST" action="/auth/login">
-            <p>
-                <input type="email" id="email" name="email" placeholder="Email *" required><i
-                    class="validation"><span></span><span></span></i>
-            </p>
-            <p>
-                <input type="password" minlength="6" id="password" name="password" placeholder="Password *" required><i
-                    class="validation"><span></span><span></span></i>
-            </p>
-            <p>
-                <input type="submit" id="login" value="Login">
-            </p>
-        </form>
-        <div id="create-account-wrap">
-            <p>Not a member? <a href="/auth/register">Create Account</a>
-            <p>
-        </div>
+  <div id="login-form-wrap">
+    <h2>Welcome back</h2>
+    <div class="subtitle">Đăng nhập để tiếp tục quản lý điểm danh</div>
+
+    <!-- Banner hiện lỗi đẹp hơn alert -->
+    <div id="error-banner" class="error-banner">
+      <strong>⚠ Lỗi:</strong><span id="error-text"></span>
     </div>
-</body>
-<script>
+
+    <form id="login-form" method="POST" action="/auth/login">
+      <p>
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="vd: teacher@school.edu.vn"
+          required
+        />
+      </p>
+      <p>
+        <label for="password">Mật khẩu</label>
+        <input
+          type="password"
+          minlength="6"
+          id="password"
+          name="password"
+          placeholder="Nhập tối thiểu 6 ký tự"
+          required
+        />
+      </p>
+
+      <div class="remember-row">
+        <label class="remember-label">
+          <input type="checkbox" name="remember" />
+          Ghi nhớ đăng nhập
+        </label>
+        <span class="forgot-link">
+          <a href="#">Quên mật khẩu?</a>
+        </span>
+      </div>
+
+      <p>
+        <input type="submit" id="login" value="Login">
+      </p>
+    </form>
+
+    <!-- <div id="create-account-wrap">
+      <p>Chưa có tài khoản? <a href="/auth/register">Đăng ký ngay</a></p>
+    </div> -->
+  </div>
+
+  <script>
     const urlParams = new URLSearchParams(window.location.search);
     const errorMessage = urlParams.get('error');
+
     if (errorMessage) {
-        alert(errorMessage);
+      const banner = document.getElementById('error-banner');
+      const text = document.getElementById('error-text');
+      text.textContent = errorMessage;
+      banner.classList.add('visible');
     }
-</script>
+  </script>
+</body>
 </html>
