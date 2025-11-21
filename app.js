@@ -21,6 +21,7 @@ var productRouter = require('./routes/product.route');
 var cameraRouter = require('./routes/camera.route');
 var attendanceRouter = require('./routes/attendance.route');
 var profileRouter = require('./routes/profile.route');
+var apiLoginRouter = require('./routes/auth.api.routes');
 
 var app = express();
 
@@ -45,7 +46,7 @@ app.use(saveUserLocal);
 // ✅ ROUTE KHÔNG CẦN LOGIN: auth
 app.use('/auth', authRouter);
 app.use('/api/attendance', attendanceRouter);
-
+app.use('/api/login', apiLoginRouter);
 // ✅ TỪ ĐÂY TRỞ XUỐNG BẮT BUỘC PHẢI LOGIN
 // app.use(requireLoginPage);
 
