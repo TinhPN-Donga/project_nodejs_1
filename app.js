@@ -6,6 +6,7 @@ var logger = require('morgan');
 require('dotenv').config();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+var cors = require('cors')
 
 // ✅ THÊM DÒNG NÀY
 const { saveUserLocal, requireLoginPage } = require('./middlewares/auth.middleware');
@@ -29,7 +30,7 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
-
+app.use(cors());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
