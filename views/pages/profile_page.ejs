@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hồ sơ cá nhân</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --card-bg: #ffffff;
+      --primary: #2563eb;
+      --primary-soft: #e0edff;
+      --text-main: #0f172a;
+      --text-sub: #6b7280;
+      --border: #e5e7eb;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.08);
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top, #e0ecff 0, #f3f4f6 40%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 28px 16px;
+      color: var(--text-main);
+    }
+
+    .page {
+      width: 100%;
+      max-width: 900px;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 26px;
+      padding: 28px 28px 32px;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(10px);
+    }
+
+    /* Header */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .back-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: #e5e7eb;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, transform 0.08s ease;
+    }
+
+    .back-btn:hover {
+      background: #d4d4d8;
+      transform: translateY(-1px);
+    }
+
+    .page-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .page-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+
+    /* Top profile block */
+    .profile-top {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 18px 18px;
+      background: linear-gradient(
+        135deg,
+        #ffffff 0%,
+        #f9fbff 45%,
+        #f3f4ff 100%
+      );
+      margin-bottom: 18px;
+    }
+
+    .avatar-square {
+      width: 120px;
+      height: 120px;
+      border-radius: 18px;
+      background: var(--primary);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      font-weight: 700;
+      overflow: hidden;
+      flex-shrink: 0;
+      cursor: pointer;
+      box-shadow: 0 12px 25px rgba(37, 99, 235, 0.35);
+    }
+
+    .avatar-square img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 18px;
+    }
+
+    .profile-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .user-name {
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    .user-email {
+      font-size: 0.95rem;
+      color: var(--text-sub);
+    }
+
+    .user-meta-row {
+      margin-top: 4px;
+      font-size: 0.95rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      color: var(--text-sub);
+    }
+
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .meta-label {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Detail card */
+    .profile-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 18px 18px 16px;
+      margin-bottom: 18px;
+    }
+
+    .profile-card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 10px 30px;
+      font-size: 0.96rem;
+    }
+
+    @media (max-width: 640px) {
+      .profile-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .detail-item span.label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .detail-item span.value {
+      color: var(--text-sub);
+    }
+
+    /* Toggle edit button */
+    .edit-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+
+    .btn-toggle {
+      border-radius: 999px;
+      border: 1px solid var(--primary);
+      background: #ffffff;
+      color: var(--primary);
+      font-size: 0.9rem;
+      padding: 8px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, color 0.15s ease, transform 0.08s ease;
+    }
+
+    .btn-toggle:hover {
+      background: var(--primary);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* Edit form */
+    #update-form {
+      display: none;
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 18px 18px 20px;
+      margin-top: 8px;
+    }
+
+    #update-form h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 14px 18px;
+    }
+
+    @media (max-width: 640px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.9rem;
+    }
+
+    .form-group label {
+      font-weight: 500;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="file"] {
+      padding: 9px 11px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 0.95rem;
+    }
+
+    .avatar-edit-block {
+      margin-top: 10px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .avatar-preview {
+      width: 80px;
+      height: 80px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      object-fit: cover;
+      background: #f9fafb;
+    }
+
+    .preview-hint {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+    }
+
+    .form-actions {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .btn-submit {
+      padding: 9px 18px;
+      border-radius: 999px;
+      border: none;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.08s ease;
+    }
+
+    .btn-submit:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    .btn-cancel {
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid #d4d4d8;
+      background: #ffffff;
+      color: var(--text-sub);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.08s ease;
+    }
+
+    .btn-cancel:hover {
+      background: #f3f4f6;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <!-- Header -->
+    <header class="page-header">
+      <div class="header-left">
+        <button class="back-btn" type="button" onclick="window.history.back()">
+          ← Quay lại
+        </button>
+        <div>
+          <div class="page-title">Hồ sơ cá nhân</div>
+          <div class="page-subtitle">
+            Thông tin tài khoản và cấu hình cá nhân của bạn.
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Top profile -->
+    <section class="profile-top">
+      <div
+        class="avatar-square"
+        onclick="document.getElementById('avatar').click()"
+        title="Nhấn để chọn ảnh mới"
+      >
+        <% if (user && user.avatar) { %>
+        <img src="<%= user.avatar %>" alt="Avatar" />
+        <% } else { %>
+        <%= user.fullName ? user.fullName[0].toUpperCase() : '?' %>
+        <% } %>
+      </div>
+
+      <div class="profile-main">
+        <div class="user-name"><%= user.fullName %></div>
+        <div class="user-email"><%= user.email %></div>
+        <div class="user-meta-row">
+          <div class="role-badge">
+            <span>●</span>
+            <span><%= user.role %></span>
+          </div>
+          <div>
+            <span class="meta-label">Số điện thoại:</span>
+            <span><%= user.phone || 'Chưa cập nhật' %></span>
+          </div>
+          <div>
+            <span class="meta-label">Ngày tạo:</span>
+            <span
+              ><%= user.createdAt
+                ? user.createdAt.toLocaleDateString('vi-VN')
+                : '' %></span
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detail card -->
+    <section class="profile-card">
+      <h3>Thông tin chi tiết</h3>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="label">Họ tên</span>
+          <span class="value"><%= user.fullName %></span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Email</span>
+          <span class="value"><%= user.email %></span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Số điện thoại</span>
+          <span class="value"><%= user.phone || 'Chưa cập nhật' %></span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Vai trò</span>
+          <span class="value"><%= user.role %></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Toggle edit -->
+    <div class="edit-row">
+      <button class="btn-toggle" type="button" onclick="toggleUpdateForm()">
+        ✏️ Chỉnh sửa thông tin
+      </button>
+    </div>
+
+    <!-- Update form -->
+    <section id="update-form">
+      <h3>Cập nhật thông tin</h3>
+      <form action="/profile/update" method="POST" enctype="multipart/form-data">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="fullName">Họ tên</label>
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              value="<%= user.fullName %>"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Số điện thoại</label>
+            <input
+              type="text"
+              id="phone"
+              name="phone"
+              value="<%= user.phone %>"
+            />
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1">
+            <label for="avatar">Ảnh đại diện</label>
+            <input
+              type="file"
+              id="avatar"
+              name="avatar"
+              accept="image/*"
+              onchange="previewAvatar(event)"
+            />
+            <div class="avatar-edit-block">
+              <img
+                id="avatar-preview"
+                class="avatar-preview"
+                src="<%= user.avatar || '' %>"
+                alt="Preview"
+              />
+              <div class="preview-hint">
+                Nhấn vào khung avatar phía trên hoặc chọn file tại đây để thay
+                ảnh mới. Hỗ trợ các định dạng JPG, PNG.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            class="btn-cancel"
+            type="button"
+            onclick="toggleUpdateForm(false)"
+          >
+            Hủy
+          </button>
+          <button class="btn-submit" type="submit">Lưu thay đổi</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    function toggleUpdateForm(force) {
+      const form = document.getElementById("update-form");
+      if (force === false) {
+        form.style.display = "none";
+        return;
+      }
+      form.style.display = form.style.display === "block" ? "none" : "block";
+    }
+
+    function previewAvatar(event) {
+      const preview = document.getElementById("avatar-preview");
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      preview.src = url;
+    }
+  </script>
+</body>
+</html>

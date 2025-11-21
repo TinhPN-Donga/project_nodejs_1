@@ -20,6 +20,7 @@ var authRouter = require('./routes/auth.route');
 var productRouter = require('./routes/product.route');
 var cameraRouter = require('./routes/camera.route');
 var attendanceRouter = require('./routes/attendance.route');
+var profileRouter = require('./routes/profile.route');
 
 var app = express();
 
@@ -50,6 +51,7 @@ app.use('/api/attendance', attendanceRouter);
 
 // ✅ NẾU ĐÃ LOGIN THÌ MỚI ĐƯỢC VÀO CÁC ROUTE NÀY
 app.use('/', indexRouter);
+// app.use('/profile', profileRouter);
 app.use('/users', usersRouter);
 app.use('/products', productRouter);
 app.use('/camera', cameraRouter);
